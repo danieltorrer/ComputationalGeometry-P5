@@ -33,6 +33,7 @@ public class IsoSurface implements PConstants {
   
 	PVector start, end;
 	int detailx, detaily, detailz;
+	public PGraphics canvas;
 	PApplet theParent;
 	public PVector[] vertices;
 	public float[] values;
@@ -43,14 +44,16 @@ public class IsoSurface implements PConstants {
 	
 	public IsoSurface(PApplet _theParent, PVector _start, PVector _end, int _detail ){
 		theParent = _theParent;
+		canvas = _theParent.g;
 		start = _start;
 		end = _end;
 		detailx = detaily = detailz = _detail;
 		this.reset();
 	}
   
-  	public IsoSurface(PApplet _theParent, PVector _start, PVector _end, int _detailx, int _detaily, int _detailz ){
-  		theParent = _theParent;
+  	public IsoSurface(PApplet _theParent, PGraphics _canvas, PVector _start, PVector _end, int _detailx, int _detaily, int _detailz ){
+		theParent = _theParent;
+  		canvas = _canvas;
 	    start = _start;
 	    end = _end;
 	    detailx = _detailx;
@@ -123,10 +126,10 @@ public void setValues( float[] a){
 			int other = i + detailz*detaily + detailz + 1;
 			PVector center = PVector.add( vertices[i], vertices[other]);
 		    center.mult(.5f);
-		    theParent.pushMatrix();
-		    theParent.translate(center.x, center.y, center.z);
-		    theParent.box( vertices[other].x - vertices[i].x,  vertices[other].y - vertices[i].y, vertices[other].z - vertices[i].z);
-		    theParent.popMatrix();
+		    canvas.pushMatrix();
+		    canvas.translate(center.x, center.y, center.z);
+		    canvas.box( vertices[other].x - vertices[i].x,  vertices[other].y - vertices[i].y, vertices[other].z - vertices[i].z);
+		    canvas.popMatrix();
 		 }
 	  }
   }
@@ -164,10 +167,10 @@ public void setValues( float[] a){
 			    int lookUp = PApplet.unbinary(myString);
 			    float sx = theParent.screenX(corner.x + xSize/2.0f, corner.y+ ySize/2.0f, corner.z + zSize/2.0f );
 			    float sy = theParent.screenY(corner.x + xSize/2.0f, corner.y+ ySize/2.0f, corner.z + zSize/2.0f );
-			    theParent.textMode(SCREEN);
-			    theParent.textAlign(CENTER, CENTER);
-			    theParent.textFont(font);
-			    theParent.text(lookUp, sx, sy);
+			    canvas.textMode(SCREEN);
+			    canvas.textAlign(CENTER, CENTER);
+			    canvas.textFont(font);
+			    canvas.text(lookUp, sx, sy);
 	    	}
 	    }
 	  
@@ -225,7 +228,7 @@ public void setValues( float[] a){
 
 	    for(int i=0;i<5;i++){
 	      if(triangles[i*3] != -1){
-	        theParent.beginShape(TRIANGLES);
+	    	  canvas.beginShape(TRIANGLES);
 	        for(int v=0;v<3;v++){
 	          int num1 = edgeToVertexA[triangles[i*3+v]];
 	          int num2 = edgeToVertexB[triangles[i*3+v]];
@@ -240,9 +243,9 @@ public void setValues( float[] a){
 	            vtx2P = 1- PApplet.abs((threshold-myValues[num2])/spread);
 	          }
 	          //vtx1P = vtx2P = .5f;
-	          theParent.vertex(vertexes[num1].x*vtx1P+vertexes[num2].x*vtx2P,vertexes[num1].y*vtx1P+vertexes[num2].y*vtx2P,vertexes[num1].z*vtx1P+vertexes[num2].z*vtx2P);
+	          canvas.vertex(vertexes[num1].x*vtx1P+vertexes[num2].x*vtx2P,vertexes[num1].y*vtx1P+vertexes[num2].y*vtx2P,vertexes[num1].z*vtx1P+vertexes[num2].z*vtx2P);
 	        }
-	        theParent.endShape();
+	        canvas.endShape();
 	      }
 	    }
 	  }
